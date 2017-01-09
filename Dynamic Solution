@@ -56,9 +56,9 @@ AlgTime = [] #Array used for storing the time
 #The below code is used to gather an average run time for the algorithm 
 for e in range(1,100): #Amount of numbers created
 	for f in range(0,5): #Number of repeats of same amount of numbers
-		instance.random_yes_instance(e, 10) #Calls the function random_yes_instance inside the class instance with input of t
+		instance.random_yes_instance(e, 10)
 		start_time = time.time() #Records the start time
 		instance.dynamic() #Runs the dynamic search function
-		AlgTime.append(time.time() - start_time) #Add time taken to list
-	print('average of ', e,' numbers - ',(sum(AlgTime)/5)) #Make average of times and prints them out
+		AlgTime.append(time.time() - start_time) #Adds the times taken to AlgTime
+	print('average of ', e,' numbers - ',(sum(AlgTime)/5)) #Prints the average time of the repeats
 	del AlgTime[:] #Empties the list
