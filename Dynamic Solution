@@ -1,0 +1,63 @@
+from random import randint, sample
+from itertools import chain, combinations
+import time
+
+class SSP():
+	def __init__(self, S=[], t=0):
+		self.S = S
+		self.t = t
+		self.n = len(S)
+		self.decision = False
+		self.total    = 0
+		self.selected = []
+		
+	def __repr__(self):
+		return "SSP instance: S="+str(self.S)+"\tt="+str(self.t)
+
+	def random_instance(self, n, bitlength=10):
+		max_n_bit_number = 2**bitlength-1
+		self.S = sorted( [ randint(0,max_n_bit_number) for i in range(n) ] , reverse=True)
+		self.t = randint(0,n*max_n_bit_number)
+		self.n = len( self.S )
+
+	def random_yes_instance(self, n, bitlength):
+		max_n_bit_number = 2**bitlength-1
+		self.S = sorted( [ randint(0,max_n_bit_number) for i in range(n) ] , reverse=True)
+		self.t = sum( sample(self.S, randint(0,n)) )
+		self.n = len( self.S )
+
+	def try_at_random(self):
+		candidate = []
+		total = 0
+		while total != self.t:
+			candidate = sample(self.S, randint(0,self.n))
+			total     = sum(candidate)
+			print( "Trying: ", candidate, ", sum:", total )
+
+	def dynamic(self):
+		DynList = list(self.S) #Create a copy of the list S
+		n = len(self.S) #Length of the list S
+		targ = self.t #The target 
+		sub = [[0 for x in range(n+1)] for y in range(targ+1)] #Fill the x and y with the correct number of spaces
+		for a in range(0,n+1): #For the amount of numbers in the list S
+			sub[0][a] = True #Set the first column to be  true
+		for b in range(1, targ+1): #For the amount of other columns
+			sub[b][0] = False #Set all the other values to false as a placeholder
+		for c in range(1, targ+1): #For the amount of other columns
+			for d in range(1,n+1): #For amount of rows
+				sub[c][d] = sub[c][d-1] #Make value eqaul to the value above it
+				if c >= DynList[d-1]: #If the column is either more than or equal to point in rows in the list S
+					sub[c][d] = sub[c][d] | sub[c - DynList[d-1]][d-1] #Make equal to point or go one up and back 
+		return sub[targ][n] #Return true or false for final point
+
+instance = SSP() #Makes an instance of the class SSP
+AlgTime = [] #Array used for storing the time
+
+for e in range(1,20): #Amount of numbers created
+	for f in range(0,19): #Number of repeats of same amount of numbers
+		instance.random_yes_instance(e, 10) #Calls the function random_yes_instance inside the class instance with input of t
+		start_time = time.time() #Records the start time
+		instance.dynamic() #Runs the dynamic search function
+		AlgTime.append(time.time() - start_time) #Add time taken to list
+	print('average of ', e,' numbers - ',(sum(AlgTime)/20)) #Make average of times and prints them out
+	del AlgTime[:] #Empty list
