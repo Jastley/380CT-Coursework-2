@@ -1,0 +1,37 @@
+import itertools
+import time
+import random
+#Note to reader - This code isn't the most optimised or efficient however it does still work and provide the correct answer
+#If I manage to have spare time I will try to come back and better optimise it later on however for now since it does properly work
+#I have let it as is
+
+def BruteForce(BruteList, target):
+    results =[]
+    total = 0
+    for i in range(0,len(BruteList)+1):
+        results += itertools.combinations(BruteList,i)
+
+    for set in results:
+        #Set total to be the sum of the current set of numbers
+        total = sum(set)
+        print ("Target is "+str(target)+".") #Prints what the current target is
+        print ("Trying the set"+ str(set)+" Total sum of set "+str(total)+"." ) #Prints the set the program is trying as well as the sum of that set
+        #Compares the sum of the current set to the target
+        if (total == target): #If correct
+            print("Match for "+ str(total)+". The Solution: " +str(set)) #Print that it's a match 
+            return
+        else: #If not correct
+            print ("> Not a match") #Print it's not a match
+    print("No match was found.") #If no correct set can be found print this line
+    return
+
+
+BruteList = random.sample(range(30), 18) #Fills the list with 8 random numbers within the range 0-30
+target = random.randint(1,1000) #Sets the target to be a random int within the range 1-30
+AlgTime = [] #Used to hold the time
+
+#Call the brute force function and time it
+start_time = time.clock()
+BruteForce(BruteList,target)
+AlgTime.append(time.clock() - start_time)
+print("Time taken "+ str(AlgTime))
